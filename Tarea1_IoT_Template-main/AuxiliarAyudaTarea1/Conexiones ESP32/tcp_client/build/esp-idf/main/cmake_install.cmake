@@ -1,4 +1,4 @@
-# Install script for directory: /home/estebn/esp/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/main
+# Install script for directory: /home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
