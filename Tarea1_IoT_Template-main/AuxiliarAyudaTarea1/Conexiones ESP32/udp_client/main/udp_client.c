@@ -25,6 +25,8 @@
 #include <lwip/netdb.h>
 #include "addr_from_stdin.h"
 
+#include "packeting.c"
+
 #if defined(CONFIG_EXAMPLE_IPV4)
 #define HOST_IP_ADDR CONFIG_EXAMPLE_IPV4_ADDR
 #elif defined(CONFIG_EXAMPLE_IPV6)
@@ -36,7 +38,9 @@
 #define PORT CONFIG_EXAMPLE_PORT
 
 static const char *TAG = "example";
-static const char *payload = "Message from ESP32 ";
+char *payload;
+unsigned int protocolID;
+int transportLayer;
 
 
 static void udp_client_task(void *pvParameters)
@@ -46,7 +50,12 @@ static void udp_client_task(void *pvParameters)
     int addr_family = 0;
     int ip_protocol = 0;
 
+
+
     while (1) {
+
+        protocolID = 0;
+        transportLayer = 0;
 
 #if defined(CONFIG_EXAMPLE_IPV4)
         struct sockaddr_in dest_addr;
@@ -82,14 +91,20 @@ static void udp_client_task(void *pvParameters)
 
         ESP_LOGI(TAG, "Socket created, sending to %s:%d", HOST_IP_ADDR, PORT);
 
+
+
+        
+
         while (1) {
-            // Aca hacer frgmentacion de paquetes para el protocolo 4, cambiar un poco empaquetacion (de a 1000 bytes), crear una nueva cabecera
-            int err = sendto(sock, payload, strlen(payload), 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+            
+            int msglen = messageLength(protocolID);
+            payload = mensaje(protocolID, transportLayer);
+            int err = sendto(sock, payload, msglen, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
             if (err < 0) {
                 ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
                 break;
             }
-            ESP_LOGI(TAG, "Message sent");
+            ESP_LOGI(TAG, "Message sent:%s", payload);
 
             struct sockaddr_storage source_addr; // Large enough for both IPv4 or IPv6
             socklen_t socklen = sizeof(source_addr);
@@ -104,14 +119,13 @@ static void udp_client_task(void *pvParameters)
             else {
                 rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
                 ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
-                ESP_LOGI(TAG, "%s", rx_buffer);
                 if (strncmp(rx_buffer, "OK: ", 4) == 0) {
                     ESP_LOGI(TAG, "Received expected message, reconnecting");
                     break;
                 }
             }
 
-            vTaskDelay(2000 / portTICK_PERIOD_MS); // reemplazar aca por nuestro deep sleep
+            vTaskDelay(2000 / portTICK_PERIOD_MS);
         }
 
         if (sock != -1) {

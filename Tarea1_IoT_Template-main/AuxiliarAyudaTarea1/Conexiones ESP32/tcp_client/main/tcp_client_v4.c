@@ -12,6 +12,9 @@
 #include <arpa/inet.h>
 #include "esp_netif.h"
 #include "esp_log.h"
+#include "esp_sleep.h"
+
+#include <packeting.c>
 #if defined(CONFIG_EXAMPLE_SOCKET_IP_INPUT_STDIN)
 #include "addr_from_stdin.h"
 #endif
@@ -25,7 +28,7 @@
 #define PORT CONFIG_EXAMPLE_PORT
 
 static const char *TAG = "example";
-static const char *payload = "Message from ESP32 ";
+char *payload;
 
 
 void tcp_client(void)
@@ -63,7 +66,9 @@ void tcp_client(void)
         ESP_LOGI(TAG, "Successfully connected");
 
         while (1) {
-            int err = send(sock, payload, strlen(payload), 0);
+            payload = mensaje(0,0);
+            int msglen = messageLength(0);
+            int err = send(sock, payload, msglen, 0);
             if (err < 0) {
                 ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
                 break;
@@ -80,6 +85,10 @@ void tcp_client(void)
                 rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
                 ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
                 ESP_LOGI(TAG, "%s", rx_buffer);
+
+                const int deep_sleep_sec = 4;
+                ESP_LOGI(TAG, "Entering deep sleep for %d seconds", deep_sleep_sec);
+                esp_deep_sleep(1000000LL * deep_sleep_sec);
             }
         }
 

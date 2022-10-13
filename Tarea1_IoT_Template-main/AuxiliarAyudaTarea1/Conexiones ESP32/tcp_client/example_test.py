@@ -16,7 +16,7 @@ import ttfw_idf
 from common_test_methods import get_env_config_variable, get_host_ip_by_interface, get_my_interface_by_dest_ip
 
 # -----------  Config  ----------
-PORT = 5000
+PORT = 5010
 # -------------------------------
 
 
