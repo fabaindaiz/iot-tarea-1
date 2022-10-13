@@ -33,7 +33,7 @@ def parseData(packet):
     return None if dataD is None else {**header, **dataD}
 
 def protUnpack(protocol:int, data):
-    protocol_unpack = ["<B", "<Bl", "<BlBfBf"] # Ver tabla para formato de mensaje, en la documentacion
+    protocol_unpack = ["<B", "<Bl", "<BlBfBf", "<BlBfBff", "<BlBfBffffffff", "<BlBfBffff"] # Ver tabla para formato de mensaje, en la documentacion
     return unpack(protocol_unpack[protocol], data)
 
 def headerDict(data):
@@ -50,10 +50,13 @@ def dataDict(protocol:int, data):
             unp = protUnpack(protocol, data)
             return {key:val for (key,val) in zip(keys, unp)}
         return p
-    p0 = ["OK"]
-    p1 = ["Batt_level", "Timestamp"]
-    p2 = ["Batt_level", "Timestamp", "Temp", "Pres", "Hum", "Co"]
-    p = [p0, p1, p2]
+    p00 = ["OK"]
+    p0 = ["Batt_level", "Timestamp"]
+    p1 = ["Batt_level", "Timestamp", "Temp", "Pres", "Hum", "Co"]
+    p2 = ["Batt_level", "Timestamp", "Temp", "Pres", "Hum", "Co", "RMS"]
+    p3 = ["Batt_level", "Timestamp", "Temp", "Pres", "Hum", "Co", "Amp_X", "Frec_X", "Amp_Y", "Frec_Y", "Amp_Z", "Frec_Z"]
+    p4 = ["Batt_level", "Timestamp", "Temp", "Pres", "Hum", "Co", "Acc_X", "Acc_Y", "Acc_Z"]
+    p = [p00, p0, p1, p2, p3, p4]
 
     try:
         return protFunc(protocol, p[protocol])(data)
