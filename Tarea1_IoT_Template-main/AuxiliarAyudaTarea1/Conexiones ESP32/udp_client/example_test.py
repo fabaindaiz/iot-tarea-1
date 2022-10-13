@@ -17,7 +17,7 @@ from common_test_methods import get_env_config_variable, get_host_ip_by_interfac
 from tiny_test_fw.DUT import ExpectTimeout
 
 # -----------  Config  ----------
-PORT = 3333
+PORT = 5010
 # -------------------------------
 
 
