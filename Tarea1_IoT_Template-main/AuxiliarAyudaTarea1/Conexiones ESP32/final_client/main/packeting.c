@@ -184,13 +184,13 @@ char* dataprotocol4(){
 	memcpy((void*) &(msg[27]), (void*) &ampy, 4); //msg[27-30]
 
 	
-	memcpy((void*) &(msg[33]), (void*) &frecy, 4); //msg[31-34]
+	memcpy((void*) &(msg[31]), (void*) &frecy, 4); //msg[31-34]
 
 	
-	memcpy((void*) &(msg[37]), (void*) &ampz, 4); //msg[35-38]
+	memcpy((void*) &(msg[35]), (void*) &ampz, 4); //msg[35-38]
 
 	
-	memcpy((void*) &(msg[41]), (void*) &frecz, 4); //msg[39-42]
+	memcpy((void*) &(msg[39]), (void*) &frecz, 4); //msg[39-42]
 
 	
 
