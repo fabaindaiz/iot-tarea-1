@@ -88,9 +88,9 @@ void tcp_client(void)
                 }
                 // Data received
 
-                int status = (int) rx_buffer[2];
-                int protocol = (int) rx_buffer[3];
-                int transport = (int) rx_buffer[4];
+                unsigned char status = (unsigned char) rx_buffer[2];
+                unsigned char protocol = (unsigned char) rx_buffer[3];
+                unsigned char transport = (unsigned char) rx_buffer[4];
 
                 if (res_status == 10) {
                     rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
@@ -153,10 +153,10 @@ void tcp_client(void)
 
                 ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
 
-                int change = (int) rx_buffer[1]
-                int status = (int) rx_buffer[2];
-                int protocol = (int) rx_buffer[3];
-                int transport = (int) rx_buffer[4];
+                unsigned char change = (unsigned char) rx_buffer[1];
+                unsigned char status = (unsigned char) rx_buffer[2];
+                unsigned char protocol = (unsigned char) rx_buffer[3];
+                unsigned char transport = (unsigned char) rx_buffer[4];
                 
                 if (res_status == 10) {
                     ESP_LOGI(TAG, "Received expected message, reconnecting");
@@ -166,7 +166,7 @@ void tcp_client(void)
                         ESP_LOGI(TAG, "Entering deep sleep for %d seconds", deep_sleep_sec);
                         esp_deep_sleep(1000000LL * deep_sleep_sec);
                     }
-                    
+
                     break;
                 }
             }

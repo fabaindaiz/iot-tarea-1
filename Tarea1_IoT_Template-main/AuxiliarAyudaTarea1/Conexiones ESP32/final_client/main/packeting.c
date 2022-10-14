@@ -171,7 +171,7 @@ char* dataprotocol4(){
 	float frecy = acc_kpi_ptr[3];
 	float ampz = acc_kpi_ptr[4];
 	float frecz = acc_kpi_ptr[5];
-	//free(acc_kpi_ptr); // liberamos el malloc
+	free(acc_kpi_ptr); // liberamos el malloc
 	
 	
 	memcpy((void*) &(msg[15]), (void*) &rms, 4); //msg[15-18]
