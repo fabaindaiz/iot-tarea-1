@@ -42,7 +42,7 @@ class UDPSocket():
 
     def receive(self):
         try:
-            data, self.addr = sUDP.recvfrom(1024)
+            data, self.addr = self.sUDP.recvfrom(1024)
             print(f"Received '{data}' from {self.addr}")
             return parseData(data)
         except Exception as e:

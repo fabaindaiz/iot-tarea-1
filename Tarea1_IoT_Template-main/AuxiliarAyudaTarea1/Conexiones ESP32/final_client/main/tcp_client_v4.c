@@ -98,7 +98,7 @@ void tcp_client(void)
                 transport = (unsigned char) rx_buffer[4];
                 
 
-                if (reset == 1 || (change == 0 && status == 10)) {
+                if (reset == 1 || (protocol == 0 && transport == 0 && status == 10)) {
                     rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
                     ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
                     ESP_LOGI(TAG, "%s", rx_buffer);
