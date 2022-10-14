@@ -33,6 +33,10 @@ char *payload;
 unsigned char protocol = 0;
 unsigned char transport = 0;
 
+unsigned char change = 1;
+unsigned char status;
+unsigned char reset = 0;
+
 
 void tcp_client(void)
 {
@@ -88,11 +92,13 @@ void tcp_client(void)
                 }
                 // Data received
 
-                unsigned char status = (unsigned char) rx_buffer[2];
+                change = (unsigned char) rx_buffer[1];
+                status = (unsigned char) rx_buffer[2];
                 protocol = (unsigned char) rx_buffer[3];
                 transport = (unsigned char) rx_buffer[4];
+                
 
-                if (status == 10) {
+                if (reset == 1 || (change == 0 && status == 10)) {
                     rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
                     ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
                     ESP_LOGI(TAG, "%s", rx_buffer);
@@ -101,6 +107,7 @@ void tcp_client(void)
                     ESP_LOGI(TAG, "Entering deep sleep for %d seconds", deep_sleep_sec);
                     esp_deep_sleep(1000000LL * deep_sleep_sec);
                 }
+                reset = 1;
             }
 
             if (sTCP != -1) {

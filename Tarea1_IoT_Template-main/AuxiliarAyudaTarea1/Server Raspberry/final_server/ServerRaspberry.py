@@ -72,7 +72,6 @@ class Server():
         config = getConf()
         if self.protocol != config[0]: 
             self.protocol = config[0]
-            self.change = True
         if self.transport != config[1]:
             self.transport = config[1]
             self.change = True
