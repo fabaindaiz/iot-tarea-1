@@ -153,12 +153,20 @@ void tcp_client(void)
 
                 ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
 
+                int change = (int) rx_buffer[1]
                 int status = (int) rx_buffer[2];
                 int protocol = (int) rx_buffer[3];
                 int transport = (int) rx_buffer[4];
                 
                 if (res_status == 10) {
                     ESP_LOGI(TAG, "Received expected message, reconnecting");
+
+                    if (change == 1) {
+                        const int deep_sleep_sec = 1;
+                        ESP_LOGI(TAG, "Entering deep sleep for %d seconds", deep_sleep_sec);
+                        esp_deep_sleep(1000000LL * deep_sleep_sec);
+                    }
+                    
                     break;
                 }
             }
