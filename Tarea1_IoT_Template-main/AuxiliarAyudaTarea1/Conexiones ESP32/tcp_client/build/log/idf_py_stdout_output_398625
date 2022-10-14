@@ -1,0 +1,29 @@
+[1/10] Performing build step for 'bootloader'
+[1/1] cd "/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/build/bootloader/esp-idf/esptool_py" && /home/estebn/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/estebn/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones\ ESP32/tcp_client/build/bootloader/bootloader.bin
+Bootloader binary size 0x66c0 bytes. 0x940 bytes (8%) free.
+[2/8] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/tcp_client_v4.c.obj
+In file included from /home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/main/tcp_client_v4.c:17:
+/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/main/packeting.c: In function 'header':
+/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/main/packeting.c:16:25: warning: initialization of 'short unsigned int' from 'char *' makes integer from pointer without a cast [-Wint-conversion]
+   16 |     unsigned short ID = "AB";
+      |                         ^~~~
+[3/8] Linking C static library esp-idf/main/libmain.a
+[4/8] Generating ld/sections.ld
+[5/8] Linking CXX executable tcp_client.elf
+[6/8] Generating binary image from built executable
+esptool.py v4.3
+Creating esp32 image...
+Merged 25 ELF sections
+Successfully created esp32 image.
+Generated /home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/build/tcp_client.bin
+[7/8] cd "/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/build/esp-idf/esptool_py" && /home/estebn/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/estebn/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones\ ESP32/tcp_client/build/partition_table/partition-table.bin /home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones\ ESP32/tcp_client/build/tcp_client.bin
+tcp_client.bin binary size 0xb37a0 bytes. Smallest app partition is 0x100000 bytes. 0x4c860 bytes (30%) free.
+[7/8] cd /home/estebn/esp/esp-idf/components/esptool_py && /usr/bin/cmake -D IDF_PATH=/home/estebn/esp/esp-idf -D "SERIAL_TOOL=/home/estebn/.espressif/python_env/idf5.1_py3.10_env/bin/python;;/home/estebn/esp/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D "WORKING_DIRECTORY=/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/build" -P /home/estebn/esp/esp-idf/components/esptool_py/run_serial_tool.cmake
+esptool esp32 -p /dev/ttyUSB0 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 2MB 0x1000 bootloader/bootloader.bin 0x10000 tcp_client.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.3
+Serial port /dev/ttyUSB0
+
+A fatal error occurred: Could not open /dev/ttyUSB0, the port doesn't exist
+FAILED: CMakeFiles/flash /home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/build/CMakeFiles/flash 
+cd /home/estebn/esp/esp-idf/components/esptool_py && /usr/bin/cmake -D IDF_PATH=/home/estebn/esp/esp-idf -D "SERIAL_TOOL=/home/estebn/.espressif/python_env/idf5.1_py3.10_env/bin/python;;/home/estebn/esp/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D "WORKING_DIRECTORY=/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/build" -P /home/estebn/esp/esp-idf/components/esptool_py/run_serial_tool.cmake
+ninja: build stopped: subcommand failed.

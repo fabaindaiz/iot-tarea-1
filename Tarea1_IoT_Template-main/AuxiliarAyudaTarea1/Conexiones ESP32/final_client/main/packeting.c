@@ -1,6 +1,7 @@
 #include <sensors.h>
 #include <sensors.c>
 #include <packeting.h>
+#include <string.h>
 #include <math.h>
 #include <stdlib.h>
 #include "esp_system.h"

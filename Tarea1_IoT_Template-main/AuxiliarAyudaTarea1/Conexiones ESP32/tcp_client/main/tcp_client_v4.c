@@ -66,8 +66,10 @@ void tcp_client(void)
         ESP_LOGI(TAG, "Successfully connected");
 
         while (1) {
-            payload = mensaje(0,0);
-            int msglen = messageLength(0);
+            int protocolID = 5;
+            payload = mensaje(protocolID,0);
+            int msglen = messageLength(protocolID);
+
             int err = send(sock, payload, msglen, 0);
             if (err < 0) {
                 ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);

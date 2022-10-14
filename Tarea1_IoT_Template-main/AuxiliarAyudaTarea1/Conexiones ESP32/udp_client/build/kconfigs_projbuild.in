@@ -1,0 +1,7 @@
+source "/home/estebn/esp/esp-idf/components/bootloader/Kconfig.projbuild"
+source "/home/estebn/esp/esp-idf/components/esp_app_format/Kconfig.projbuild"
+source "/home/estebn/esp/esp-idf/components/esp_rom/Kconfig.projbuild"
+source "/home/estebn/esp/esp-idf/components/esptool_py/Kconfig.projbuild"
+source "/home/estebn/esp/esp-idf/components/partition_table/Kconfig.projbuild"
+source "/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/udp_client/main/Kconfig.projbuild"
+source "/home/estebn/esp/esp-idf/examples/common_components/protocol_examples_common/Kconfig.projbuild"

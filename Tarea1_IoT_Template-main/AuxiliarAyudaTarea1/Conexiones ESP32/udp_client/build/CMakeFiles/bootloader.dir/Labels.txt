@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/udp_client/build/CMakeFiles/bootloader
+/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/udp_client/build/CMakeFiles/bootloader.rule
+/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/udp_client/build/CMakeFiles/bootloader-complete.rule
+/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/udp_client/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/udp_client/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/udp_client/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/udp_client/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/udp_client/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/udp_client/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/udp_client/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule

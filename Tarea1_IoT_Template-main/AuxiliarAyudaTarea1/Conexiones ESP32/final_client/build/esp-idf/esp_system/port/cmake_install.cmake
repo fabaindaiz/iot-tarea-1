@@ -39,6 +39,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/build/esp-idf/esp_system/port/soc/esp32/cmake_install.cmake")
+  include("/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/final_client/build/esp-idf/esp_system/port/soc/esp32/cmake_install.cmake")
 endif()
 

@@ -1,4 +1,4 @@
-/* * Data converted from /home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from /home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/final_client/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 .section .rodata.embedded

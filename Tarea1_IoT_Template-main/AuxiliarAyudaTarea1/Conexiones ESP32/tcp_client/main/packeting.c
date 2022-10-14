@@ -1,6 +1,7 @@
 #include <sensors.h>
 #include <sensors.c>
 #include <packeting.h>
+#include <string.h>
 #include <math.h>
 #include <stdlib.h>
 #include "esp_system.h"
@@ -171,7 +172,7 @@ char* dataprotocol4(){
 	float frecy = acc_kpi_ptr[3];
 	float ampz = acc_kpi_ptr[4];
 	float frecz = acc_kpi_ptr[5];
-	//free(acc_kpi_ptr); // liberamos el malloc
+	free(acc_kpi_ptr); // liberamos el malloc
 	
 	
 	memcpy((void*) &(msg[15]), (void*) &rms, 4); //msg[15-18]
@@ -184,14 +185,13 @@ char* dataprotocol4(){
 	memcpy((void*) &(msg[27]), (void*) &ampy, 4); //msg[27-30]
 
 	
-	memcpy((void*) &(msg[33]), (void*) &frecy, 4); //msg[31-34]
+	memcpy((void*) &(msg[31]), (void*) &frecy, 4); //msg[31-34]
 
 	
-	memcpy((void*) &(msg[37]), (void*) &ampz, 4); //msg[35-38]
+	memcpy((void*) &(msg[35]), (void*) &ampz, 4); //msg[35-38]
 
 	
-	memcpy((void*) &(msg[41]), (void*) &frecz, 4); //msg[39-42]
-
+	memcpy((void*) &(msg[39]), (void*) &frecz, 4); //msg[39-42]
 	
 
     return msg;

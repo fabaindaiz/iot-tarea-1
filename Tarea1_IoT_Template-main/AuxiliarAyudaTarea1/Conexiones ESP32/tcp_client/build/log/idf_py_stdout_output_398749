@@ -1,0 +1,66 @@
+[1/5] cd "/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/build/esp-idf/esptool_py" && /home/estebn/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/estebn/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones\ ESP32/tcp_client/build/partition_table/partition-table.bin /home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones\ ESP32/tcp_client/build/tcp_client.bin
+tcp_client.bin binary size 0xb37a0 bytes. Smallest app partition is 0x100000 bytes. 0x4c860 bytes (30%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] cd "/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/build/bootloader/esp-idf/esptool_py" && /home/estebn/.espressif/python_env/idf5.1_py3.10_env/bin/python /home/estebn/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones\ ESP32/tcp_client/build/bootloader/bootloader.bin
+Bootloader binary size 0x66c0 bytes. 0x940 bytes (8%) free.
+[2/3] cd /home/estebn/esp/esp-idf/components/esptool_py && /usr/bin/cmake -D IDF_PATH=/home/estebn/esp/esp-idf -D "SERIAL_TOOL=/home/estebn/.espressif/python_env/idf5.1_py3.10_env/bin/python;;/home/estebn/esp/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D "WORKING_DIRECTORY=/home/estebn/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/tcp_client/build" -P /home/estebn/esp/esp-idf/components/esptool_py/run_serial_tool.cmake
+esptool esp32 -p /dev/ttyUSB0 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 2MB 0x1000 bootloader/bootloader.bin 0x10000 tcp_client.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.3
+Serial port /dev/ttyUSB0
+Connecting....
+Chip is ESP32-D0WDQ6 (revision v1.0)
+Features: WiFi, BT, Dual Core, 240MHz, VRef calibration in efuse, Coding Scheme None
+Crystal is 40MHz
+MAC: 3c:61:05:65:52:10
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00001000 to 0x00007fff...
+Flash will be erased from 0x00010000 to 0x000c3fff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+Compressed 26304 bytes to 16374...
+Writing at 0x00001000... (100 %)
+Wrote 26304 bytes (16374 compressed) at 0x00001000 in 0.9 seconds (effective 235.9 kbit/s)...
+Hash of data verified.
+Compressed 735136 bytes to 473428...
+Writing at 0x00010000... (3 %)
+Writing at 0x0001c7f8... (6 %)
+Writing at 0x00023fc0... (10 %)
+Writing at 0x0002951f... (13 %)
+Writing at 0x0003227d... (17 %)
+Writing at 0x00037a5c... (20 %)
+Writing at 0x0003d326... (24 %)
+Writing at 0x00042765... (27 %)
+Writing at 0x0004809c... (31 %)
+Writing at 0x0004d85b... (34 %)
+Writing at 0x000530ca... (37 %)
+Writing at 0x00058f48... (41 %)
+Writing at 0x0005e83f... (44 %)
+Writing at 0x000639f2... (48 %)
+Writing at 0x00068e24... (51 %)
+Writing at 0x0006e1ac... (55 %)
+Writing at 0x00073762... (58 %)
+Writing at 0x00078f8f... (62 %)
+Writing at 0x0007eaae... (65 %)
+Writing at 0x00084293... (68 %)
+Writing at 0x00089d50... (72 %)
+Writing at 0x000901ba... (75 %)
+Writing at 0x00095c1b... (79 %)
+Writing at 0x0009c02f... (82 %)
+Writing at 0x000a653c... (86 %)
+Writing at 0x000ad582... (89 %)
+Writing at 0x000b35a7... (93 %)
+Writing at 0x000b906a... (96 %)
+Writing at 0x000be91c... (100 %)
+Wrote 735136 bytes (473428 compressed) at 0x00010000 in 10.9 seconds (effective 541.6 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 103...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (103 compressed) at 0x00008000 in 0.1 seconds (effective 330.8 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...
