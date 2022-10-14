@@ -1,13 +1,39 @@
-create = '''CREATE TABLE Info (
+createData = '''CREATE TABLE Datos (
     MessageId INTEGER PRIMARY KEY,
     MAC TEXT NOT NULL,
-    Status INTEGER NOT NULL,
-    Protocol INTEGER NOT NULL,
+    IDDevice TEXT NOT NULL,
     Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-    Data1 INTEGER,
-    Data2 FLOAT,
-    Data3 FLOAT
+    Val INTEGER,
+    Batt FLOAT,
+    Temp FLOAT,
+    Press INTEGER,
+    Hum INTEGER,
+    Co FLOAT,
+    RMS FLOAT,
+    Ampx FLOAT, 
+    Frecx FLOAT,
+    Ampy FLOAT,
+    Frecy FLOAT,
+    Ampz FLOAT,
+    Frecz FLOAT,
+    Accx JSON,
+    Accy JSON,
+    Accz JSON
     
+);'''
+
+createLogs = '''CREATE TABLE Logs (
+    LogId INTEGER PRIMARY KEY,
+    IDDevice TEXT NOT NULL,
+    TransportLayer INTEGER,
+    ProtocolID INTEGER,
+    Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);'''
+
+createConf = '''CREATE TABLE Conf (
+    ConfId INTEGER PRIMARY KEY,
+    ProtocolID INTEGER,
+    TransportLayer INTEGER
 );'''
 
 import sqlite3 as sql
@@ -15,7 +41,9 @@ import sqlite3 as sql
 
 conn = sql.connect("DB.sqlite")
 cur = conn.cursor()
-cur.execute(create)
+cur.execute(createData)
+cur.execute(createLogs)
+cur.execute(createConf)
 conn.close()
 
 # inicializa la BDD

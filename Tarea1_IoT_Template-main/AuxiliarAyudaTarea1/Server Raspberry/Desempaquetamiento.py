@@ -17,29 +17,34 @@ Usamos struct para pasar de un array de bytes a una lista de numeros/strings. (h
 '''
 
     
-def response(change:bool=False, status:int=255, protocol:int=255): # aca hacer unpack + config
+def response(change:bool=False, status:int=255, protocol:int=255):
     OK = 1
     CHANGE = 1 if change else 0
     return pack("<BBBB", OK, CHANGE, status, protocol)
 
+
 def parseData(packet):
-    header = packet[:12]  # REVISAR ESTOS NUMEROS
+    header = packet[:12]
     data = packet[12:]
+    print(f"Largo del header: {len(header)}")
+    print(f"Header: {header}")
+    print(f"Largo del data: {len(data)}")
+    print(f"Data: {data}")
     header = headerDict(header)
     dataD = dataDict(header["protocol"], data)
     if dataD is not None:
-        dataSave(header, dataD)
+        dataSave(header["protocol"], header, dataD)
         
     return None if dataD is None else {**header, **dataD}
 
 def protUnpack(protocol:int, data):
-    protocol_unpack = ["<B", "<Bl", "<BlBfBf", "<BlBfBff", "<BlBfBffffffff", "<BlBfBffff"] # Ver tabla para formato de mensaje, en la documentacion
+    protocol_unpack = ["<B", "<BB", "<BBfIBf", "<BBfIBff", "<BBfIBffffffff"]
     return unpack(protocol_unpack[protocol], data)
 
 def headerDict(data):
-    M1, M2, M3, M4, M5, M6, protocol, status, leng_msg = unpack("<6B2BH", data)
-    MAC = ".".join([hex(x)[2:] for x in [M1, M2, M3, M4, M5, M6]])   # hay que cambiar el status (TCP o UDP)
-    return {"MAC":MAC, "protocol":protocol, "status":status, "length":leng_msg}
+    ID, M1, M2, M3, M4, M5, M6, transport, protocol, leng_msg = unpack("<H6BBBH", data)
+    MAC = ".".join([hex(x)[2:] for x in [M1, M2, M3, M4, M5, M6]])
+    return {"ID":ID, "MAC":MAC, "transport":transport, "protocol":protocol, "length":leng_msg}
 
 def dataDict(protocol:int, data):
     if protocol not in [0, 1, 2, 3, 4, 5]:
@@ -50,13 +55,13 @@ def dataDict(protocol:int, data):
             unp = protUnpack(protocol, data)
             return {key:val for (key,val) in zip(keys, unp)}
         return p
-    p00 = ["OK"]
-    p0 = ["Batt_level", "Timestamp"]
-    p1 = ["Batt_level", "Timestamp", "Temp", "Pres", "Hum", "Co"]
-    p2 = ["Batt_level", "Timestamp", "Temp", "Pres", "Hum", "Co", "RMS"]
-    p3 = ["Batt_level", "Timestamp", "Temp", "Pres", "Hum", "Co", "Amp_X", "Frec_X", "Amp_Y", "Frec_Y", "Amp_Z", "Frec_Z"]
-    p4 = ["Batt_level", "Timestamp", "Temp", "Pres", "Hum", "Co", "Acc_X", "Acc_Y", "Acc_Z"]
-    p = [p00, p0, p1, p2, p3, p4]
+    p0 = ["Val"]
+    p1 = ["Val", "Batt_level"]
+    p2 = ["Val", "Batt_level", "Temp", "Pres", "Hum", "Co"]
+    p3 = ["Val", "Batt_level", "Temp", "Pres", "Hum", "Co", "RMS"]
+    p4 = ["Val", "Batt_level", "Temp", "Pres", "Hum", "Co", "RMS", "Ampx", "Frecx", "Ampy", "Frecy", "Ampz", "Frecz"]
+    p5 = ["Val", "Batt_level", "Temp", "Pres", "Hum", "Co", "Accx", "Accy", "Accz"]
+    p = [p0, p1, p2, p3, p4, p5]
 
     try:
         return protFunc(protocol, p[protocol])(data)
