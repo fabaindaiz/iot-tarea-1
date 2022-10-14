@@ -30,6 +30,9 @@
 static const char *TAG = "example";
 char *payload;
 
+int protocol = 0;
+int transport = 0;
+
 
 void tcp_client(void)
 {
@@ -37,6 +40,7 @@ void tcp_client(void)
     char host_ip[] = HOST_IP_ADDR;
     int addr_family = 0;
     int ip_protocol = 0;
+
 
     while (1) {
 #if defined(CONFIG_EXAMPLE_IPV4)
@@ -51,51 +55,120 @@ void tcp_client(void)
         ESP_ERROR_CHECK(get_addr_from_stdin(PORT, SOCK_STREAM, &ip_protocol, &addr_family, &dest_addr));
 #endif
 
-        int sock =  socket(addr_family, SOCK_STREAM, ip_protocol);
-        if (sock < 0) {
-            ESP_LOGE(TAG, "Unable to create socket: errno %d", errno);
-            break;
-        }
-        ESP_LOGI(TAG, "Socket created, connecting to %s:%d", host_ip, PORT);
+        // TCP Mode
+        if (transport == 0) {
+            int sTCP = socket(addr_family, SOCK_STREAM, ip_protocol);
+            if (sTCP < 0) {
+                ESP_LOGE(TAG, "Unable to create TCP socket: errno %d", errno);
+                break;
+            }
+            ESP_LOGI(TAG, "Socket TCP created, connecting to %s:%d", host_ip, PORT);
 
-        int err = connect(sock, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
-        if (err != 0) {
-            ESP_LOGE(TAG, "Socket unable to connect: errno %d", errno);
-            break;
-        }
-        ESP_LOGI(TAG, "Successfully connected");
+            int err = connect(sTCP, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+            if (err != 0) {
+                ESP_LOGE(TAG, "Socket unable to connect: errno %d", errno);
+                break;
+            }
+            ESP_LOGI(TAG, "Successfully connected");
 
-        while (1) {
-            payload = mensaje(0,0);
-            int msglen = messageLength(0);
-            int err = send(sock, payload, msglen, 0);
-            if (err < 0) {
-                ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+            while (1) {
+                payload = mensaje(protocol, transport);
+                int msglen = messageLength(protocol);
+                int err = send(sock, payload, msglen, 0);
+                if (err < 0) {
+                    ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+                    break;
+                }
+
+                int len = recv(sock, rx_buffer, sizeof(rx_buffer) - 1, 0);
+                // Error occurred during receiving
+                if (len <= 4) {
+                    ESP_LOGE(TAG, "recv failed: errno %d", errno);
+                    break;
+                }
+                // Data received
+
+                int status = (int) rx_buffer[2];
+                int protocol = (int) rx_buffer[3];
+                int transport = (int) rx_buffer[4];
+
+                if (res_status == 10) {
+                    rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
+                    ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
+                    ESP_LOGI(TAG, "%s", rx_buffer);
+
+                    const int deep_sleep_sec = 4;
+                    ESP_LOGI(TAG, "Entering deep sleep for %d seconds", deep_sleep_sec);
+                    esp_deep_sleep(1000000LL * deep_sleep_sec);
+                }
+            }
+
+            if (sock != -1) {
+                ESP_LOGE(TAG, "Shutting down socket and restarting...");
+                shutdown(sock, 0);
+                close(sock);
+            }
+
+        }
+
+        else if (transport == 1) {
+            int alt_port = 5011;
+
+            int sUDP = socket(addr_family, SOCK_DGRAM, ip_protocol);
+            if (sTCP < 0) {
+                ESP_LOGE(TAG, "Unable to create UDP socket: errno %d", errno);
                 break;
             }
 
-            int len = recv(sock, rx_buffer, sizeof(rx_buffer) - 1, 0);
-            // Error occurred during receiving
-            if (len < 0) {
-                ESP_LOGE(TAG, "recv failed: errno %d", errno);
-                break;
-            }
-            // Data received
-            else {
-                rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
+            // Set timeout
+            struct timeval timeout;
+            timeout.tv_sec = 10;
+            timeout.tv_usec = 0;
+            setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout);
+
+            ESP_LOGI(TAG, "Socket created, sending to %s:%d", HOST_IP_ADDR, alt_port);
+
+            while (1) {
+            
+                int msglen = messageLength(protocol);
+                payload = mensaje(protocol, transport);
+
+                int err = sendto(sock, payload, msglen, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+                if (err < 0) {
+                    ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+                    break;
+                }
+                ESP_LOGI(TAG, "Message sent:%s", payload);
+
+                struct sockaddr_storage source_addr; // Large enough for both IPv4 or IPv6
+                socklen_t socklen = sizeof(source_addr);
+                int len = recvfrom(sock, rx_buffer, sizeof(rx_buffer) - 1, 0, (struct sockaddr *)&source_addr, &socklen);
+
+                // Error occurred during receiving
+                if (len <= 4) {
+                    ESP_LOGE(TAG, "recvfrom failed: errno %d", errno);
+                    break;
+                }
+                // Data received
+
                 ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
-                ESP_LOGI(TAG, "%s", rx_buffer);
 
-                const int deep_sleep_sec = 4;
-                ESP_LOGI(TAG, "Entering deep sleep for %d seconds", deep_sleep_sec);
-                esp_deep_sleep(1000000LL * deep_sleep_sec);
+                int status = (int) rx_buffer[2];
+                int protocol = (int) rx_buffer[3];
+                int transport = (int) rx_buffer[4];
+                
+                if (res_status == 10) {
+                    ESP_LOGI(TAG, "Received expected message, reconnecting");
+                    break;
+                }
+            }
+
+            if (sock != -1) {
+                ESP_LOGE(TAG, "Shutting down socket and restarting...");
+                shutdown(sock, 0);
+                close(sock);
             }
         }
 
-        if (sock != -1) {
-            ESP_LOGE(TAG, "Shutting down socket and restarting...");
-            shutdown(sock, 0);
-            close(sock);
-        }
     }
 }
