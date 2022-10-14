@@ -110,3 +110,6 @@ class Server():
                 else:
                     self.socket = self.UDP
                     self.TCP.disconnect()
+
+server = Server()
+server.mainLoop()
