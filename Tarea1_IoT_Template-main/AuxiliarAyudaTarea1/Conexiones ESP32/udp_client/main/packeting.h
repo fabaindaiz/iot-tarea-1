@@ -1,0 +1,10 @@
+char* header(unsigned int protocol, int transportLayer);
+unsigned short dataLength(unsigned int protocol);
+unsigned short messageLength(unsigned int protocol);
+char* mensaje (unsigned int protocol, int transportLayer);
+char* dataprotocol00();
+char* dataprotocol1();
+char* dataprotocol2();
+char* dataprotocol3();
+char* dataprotocol4();
+char* dataprotocol5();
