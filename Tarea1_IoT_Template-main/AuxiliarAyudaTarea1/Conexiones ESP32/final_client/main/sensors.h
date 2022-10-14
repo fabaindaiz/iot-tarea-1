@@ -1,0 +1,10 @@
+float floatrand(float min, float max);
+float* acc_sensor_x(float n);
+float* acc_sensor_y(float n);
+float* acc_sensor_z(float n);
+float THPC_sensor_temp();
+unsigned char THPC_sensor_hum();
+unsigned int THPC_sensor_pres();
+float THPC_sensor_co();
+unsigned char batt_sensor();
+float* acc_kpi();
