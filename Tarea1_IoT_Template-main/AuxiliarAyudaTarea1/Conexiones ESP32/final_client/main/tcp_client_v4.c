@@ -108,6 +108,10 @@ void tcp_client(void)
                     esp_deep_sleep(1000000LL * deep_sleep_sec);
                 }
                 reset = 1;
+
+                if (transport == 1) {
+                    break;
+                }
             }
 
             if (sTCP != -1) {
@@ -118,7 +122,7 @@ void tcp_client(void)
 
         }
 
-        else if (transport == 1) {
+        if (transport == 1) {
             int alt_port = 5011;
 
             int sUDP = socket(addr_family, SOCK_DGRAM, ip_protocol);
