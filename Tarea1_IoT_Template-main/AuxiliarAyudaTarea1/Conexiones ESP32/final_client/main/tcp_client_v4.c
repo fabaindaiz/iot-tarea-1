@@ -97,8 +97,11 @@ void tcp_client(void)
                 protocol = (unsigned char) rx_buffer[3];
                 transport = (unsigned char) rx_buffer[4];
                 
+                if (transport == 1) {
+                    break;
+                }
 
-                if (reset == 1 || (protocol == 0 && transport == 0 && status == 10)) {
+                if (reset == 1 && status == 10) {
                     rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
                     ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
                     ESP_LOGI(TAG, "%s", rx_buffer);
@@ -109,12 +112,9 @@ void tcp_client(void)
                 }
                 reset = 1;
 
-                if (transport == 1) {
-                    break;
-                }
             }
 
-            if (sTCP != -1) {
+            if (transport == 0 && sTCP != -1) {
                 ESP_LOGE(TAG, "Shutting down socket and restarting...");
                 shutdown(sTCP, 0);
                 close(sTCP);
@@ -182,7 +182,7 @@ void tcp_client(void)
                 }
             }
 
-            if (sUDP != -1) {
+            if (transport == 1 && sUDP != -1) {
                 ESP_LOGE(TAG, "Shutting down socket and restarting...");
                 shutdown(sUDP, 0);
                 close(sUDP);
