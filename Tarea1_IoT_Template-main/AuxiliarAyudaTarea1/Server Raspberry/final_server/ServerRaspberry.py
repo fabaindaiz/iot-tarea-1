@@ -16,7 +16,7 @@ class TCPSocket():
     def receive(self):
         try:
             self.conn, self.addr = self.sTCP.accept()
-            data = self.conn.recv(1024)
+            data = self.TCP_frag_recv()
             print(f"Received '{data}' from {self.addr}")
             return parseData(data)
         except Exception as e:
@@ -30,6 +30,25 @@ class TCPSocket():
             return data
         except Exception as e:
             pass
+    
+    def TCP_frag_recv(self):
+        doc = b""
+        while True:
+            try:
+                self.conn.settimeout(5)
+                data = self.conn.recv(1024)
+                if data == b'\0':
+                    break
+                else:
+                    doc += data
+            except TimeoutError:
+                self.conn.send(b'\0')
+                raise
+            except Exception:
+                self.conn.send(b'\0')
+                raise
+            self.conn.send(b'\1')
+        return doc
 
 
 class UDPSocket():
@@ -42,7 +61,7 @@ class UDPSocket():
 
     def receive(self):
         try:
-            data, self.addr = self.sUDP.recvfrom(1024)
+            data, self.addr = self.UDP_frag_recv()
             print(f"Received '{data}' from {self.addr}")
             return parseData(data)
         except Exception as e:
@@ -55,6 +74,24 @@ class UDPSocket():
             return data
         except Exception as e:
             pass
+    
+    def UDP_frag_recv(self):
+        doc = b""
+        addr = None
+        while True:
+            try:
+
+                data, addr = self.sUDP.recvfrom(1024)
+                if data == b'\0':
+                    break
+                else:
+                    doc += data
+            except TimeoutError:
+                raise
+            except Exception:
+                raise
+            # s.sendto(b'\1', addr)
+        return (doc, addr)
 
 
 class Server():
