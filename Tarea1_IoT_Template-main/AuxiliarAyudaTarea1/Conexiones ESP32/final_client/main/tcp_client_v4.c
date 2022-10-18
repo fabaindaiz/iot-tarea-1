@@ -29,6 +29,12 @@
 #define PORT CONFIG_EXAMPLE_PORT
 #define PACK_LEN 1000
 
+char rx_buffer[128];
+char host_ip[] = HOST_IP_ADDR;
+int addr_family = 0;
+int ip_protocol = 0;
+
+
 static const char *TAG = "example";
 char *payload;
 
@@ -39,29 +45,18 @@ unsigned char change = 1;
 unsigned char status;
 unsigned char action = 0;
 
-char rx_buffer[128];
+
 
 
 void tcp_client(void)
 {
-    char rx_buffer[128];
-    char host_ip[] = HOST_IP_ADDR;
-    int addr_family = 0;
+
     //int ip_protocol = 0;
 
 
     while (1) {
-#if defined(CONFIG_EXAMPLE_IPV4)
-        struct sockaddr_in dest_addr;
-        inet_pton(AF_INET, host_ip, &dest_addr.sin_addr);
-        dest_addr.sin_family = AF_INET;
-        dest_addr.sin_port = htons(PORT);
-        addr_family = AF_INET;
-        //ip_protocol = IPPROTO_IP;
-#elif defined(CONFIG_EXAMPLE_SOCKET_IP_INPUT_STDIN)
-        struct sockaddr_storage dest_addr = { 0 };
-        ESP_ERROR_CHECK(get_addr_from_stdin(PORT, SOCK_STREAM, &ip_protocol, &addr_family, &dest_addr));
-#endif
+
+
 
         if (transport == 0) {
             TCPConnection();
@@ -160,9 +155,20 @@ void parsemsg() {
 
 
 void TCPConnection() {
+#if defined(CONFIG_EXAMPLE_IPV4)
+        struct sockaddr_in dest_addr;
+        inet_pton(AF_INET, host_ip, &dest_addr.sin_addr);
+        dest_addr.sin_family = AF_INET;
+        dest_addr.sin_port = htons(PORT);
+        addr_family = AF_INET;
+        ip_protocol = IPPROTO_IP;
+#elif defined(CONFIG_EXAMPLE_SOCKET_IP_INPUT_STDIN)
+        struct sockaddr_storage dest_addr = { 0 };
+        ESP_ERROR_CHECK(get_addr_from_stdin(PORT, SOCK_STREAM, &ip_protocol, &addr_family, &dest_addr));
+#endif
 
     // Crea el socket
-    int sTCP = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
+    int sTCP = socket(addr_family, SOCK_STREAM, ip_protocol);
     if (sTCP < 0) {
         ESP_LOGE(TAG, "Unable to create TCP socket: errno %d", errno);
         return;
@@ -180,7 +186,7 @@ void TCPConnection() {
         payload = mensaje(protocol, transport);
         int msglen = messageLength(protocol);
 
-        int err = TCP_send_frag(sTCP, transport, protocol)
+        int err = TCP_send_frag(sTCP, transport, protocol);
         // send(sTCP, payload, msglen, 0);
 
         if (err < 0) {
@@ -209,6 +215,17 @@ void TCPConnection() {
 
 
 static void udp_client_task(void *pvParameters) {
+#if defined(CONFIG_EXAMPLE_IPV4)
+        struct sockaddr_in dest_addr;
+        inet_pton(AF_INET, host_ip, &dest_addr.sin_addr);
+        dest_addr.sin_family = AF_INET;
+        dest_addr.sin_port = htons(PORT);
+        addr_family = AF_INET;
+        ip_protocol = IPPROTO_IP;
+#elif defined(CONFIG_EXAMPLE_SOCKET_IP_INPUT_STDIN)
+        struct sockaddr_storage dest_addr = { 0 };
+        ESP_ERROR_CHECK(get_addr_from_stdin(PORT, SOCK_STREAM, &ip_protocol, &addr_family, &dest_addr));
+#endif
     int alt_port = 5011;
 
     int sUDP = socket(addr_family, SOCK_DGRAM, ip_protocol);
