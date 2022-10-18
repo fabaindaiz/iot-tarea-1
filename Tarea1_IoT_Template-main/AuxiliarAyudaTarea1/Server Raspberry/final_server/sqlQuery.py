@@ -28,3 +28,11 @@ def dataSave(protocol, header, data):
                         (header["MAC"], header["ID"], data["Val"], data["Batt_level"], data["Temp"], data["Pres"], data["Hum"], data["Co"], data["RMS"], data["Ampx"], data["Frecx"], data["Ampy"], data["Frecy"], data["Ampz"], data["Frecz"]))
         else:
             pass
+
+def logsSave(protocol, header):
+    with sql.connect("DB.sqlite") as con:
+        cur = con.cursor()
+
+        if protocol==0:
+            cur.execute('''INSERT into Datos (IDDevice, TLType, IDProtocol) values (?, ?, ?)''',
+            header["ID"], header["transport"], header["protocol"])
