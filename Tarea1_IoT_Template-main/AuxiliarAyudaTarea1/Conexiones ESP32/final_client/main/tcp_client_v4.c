@@ -14,6 +14,7 @@
 #include "esp_log.h"
 #include "esp_sleep.h"
 
+#include <tcp_client_v4.h>
 #include <packeting.c>
 #if defined(CONFIG_EXAMPLE_SOCKET_IP_INPUT_STDIN)
 #include "addr_from_stdin.h"
@@ -26,6 +27,7 @@
 #endif
 
 #define PORT CONFIG_EXAMPLE_PORT
+#define PACK_LEN 1000
 
 static const char *TAG = "example";
 char *payload;
@@ -37,13 +39,15 @@ unsigned char change = 1;
 unsigned char status;
 unsigned char action = 0;
 
+char rx_buffer[128];
+
 
 void tcp_client(void)
 {
     char rx_buffer[128];
     char host_ip[] = HOST_IP_ADDR;
     int addr_family = 0;
-    int ip_protocol = 0;
+    //int ip_protocol = 0;
 
 
     while (1) {
@@ -53,7 +57,7 @@ void tcp_client(void)
         dest_addr.sin_family = AF_INET;
         dest_addr.sin_port = htons(PORT);
         addr_family = AF_INET;
-        ip_protocol = IPPROTO_IP;
+        //ip_protocol = IPPROTO_IP;
 #elif defined(CONFIG_EXAMPLE_SOCKET_IP_INPUT_STDIN)
         struct sockaddr_storage dest_addr = { 0 };
         ESP_ERROR_CHECK(get_addr_from_stdin(PORT, SOCK_STREAM, &ip_protocol, &addr_family, &dest_addr));
@@ -75,7 +79,7 @@ int TCP_send_frag(int sock, char transport, char protocolo)
     printf("Sending!\n");
     char *payload = mensaje(protocolo, transport);
     int payloadLen = messageLength(protocolo) - 1;
-    char rx_buffer[128];
+    
 
     for (int i = 0; i < payloadLen; i += PACK_LEN)
     {
@@ -144,9 +148,9 @@ void parsemsg() {
 
     if (transport == 0 && !change_transport && !change_protocol) {
         // mimir
-        rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
-        ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
-        ESP_LOGI(TAG, "%s", rx_buffer);
+        // rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
+        // ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
+        // ESP_LOGI(TAG, "%s", rx_buffer);
 
         const int deep_sleep_sec = 4;
         ESP_LOGI(TAG, "Entering deep sleep for %d seconds", deep_sleep_sec);
@@ -158,17 +162,17 @@ void parsemsg() {
 void TCPConnection() {
 
     // Crea el socket
-    int sTCP = socket(addr_family, SOCK_STREAM, ip_protocol);
+    int sTCP = socket(AF_INET, SOCK_STREAM, IPPROTO_IP);
     if (sTCP < 0) {
         ESP_LOGE(TAG, "Unable to create TCP socket: errno %d", errno);
-        break;
+        return;
     }
-    ESP_LOGI(TAG, "Socket TCP created, connecting to %s:%d", host_ip, PORT);
+    ESP_LOGI(TAG, "Socket TCP created, connecting to %s:%d", HOST_IP_ADDR, PORT);
 
     int err = connect(sTCP, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
     if (err != 0) {
         ESP_LOGE(TAG, "Socket unable to connect: errno %d", errno);
-        break;
+        return;
     }
     ESP_LOGI(TAG, "Successfully connected");
 
@@ -210,7 +214,7 @@ static void udp_client_task(void *pvParameters) {
     int sUDP = socket(addr_family, SOCK_DGRAM, ip_protocol);
     if (sUDP < 0) {
         ESP_LOGE(TAG, "Unable to create UDP socket: errno %d", errno);
-        break;
+        return;
     }
 
     // Set timeout
