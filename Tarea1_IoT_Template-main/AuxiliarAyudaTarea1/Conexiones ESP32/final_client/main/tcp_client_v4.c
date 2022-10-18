@@ -121,6 +121,12 @@ int TCP_send_frag(int sock, char transport, char protocolo)
     return err;
 }
 
+void mimir() {
+    const int deep_sleep_sec = 4;
+    ESP_LOGI(TAG, "Entering deep sleep for %d seconds", deep_sleep_sec);
+    esp_deep_sleep(1000000LL * deep_sleep_sec);
+}
+
 void parsemsg() {
     unsigned char change = (unsigned char) rx_buffer[1];
     unsigned char status = (unsigned char) rx_buffer[2];
@@ -143,13 +149,9 @@ void parsemsg() {
 
     if (transport == 0 && !change_transport && !change_protocol) {
         // mimir
-        // rx_buffer[len] = 0; // Null-terminate whatever we received and treat like a string
-        // ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
-        // ESP_LOGI(TAG, "%s", rx_buffer);
+        mimir();
 
-        const int deep_sleep_sec = 4;
-        ESP_LOGI(TAG, "Entering deep sleep for %d seconds", deep_sleep_sec);
-        esp_deep_sleep(1000000LL * deep_sleep_sec);
+        
     }
 }
 
@@ -171,6 +173,7 @@ void TCPConnection() {
     int sTCP = socket(addr_family, SOCK_STREAM, ip_protocol);
     if (sTCP < 0) {
         ESP_LOGE(TAG, "Unable to create TCP socket: errno %d", errno);
+        mimir();
         return;
     }
     ESP_LOGI(TAG, "Socket TCP created, connecting to %s:%d", HOST_IP_ADDR, PORT);
@@ -201,9 +204,12 @@ void TCPConnection() {
             break;
         }
         // Data received
-
-        parsemsg();
-        return;
+        else {
+            ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
+            parsemsg();
+            return;
+        }
+        
     }
 
     if (transport == 0 && sTCP != -1) {
@@ -231,6 +237,7 @@ static void udp_client_task(void *pvParameters) {
     int sUDP = socket(addr_family, SOCK_DGRAM, ip_protocol);
     if (sUDP < 0) {
         ESP_LOGE(TAG, "Unable to create UDP socket: errno %d", errno);
+        mimir();
         return;
     }
 
@@ -261,17 +268,18 @@ static void udp_client_task(void *pvParameters) {
         int len = recvfrom(sUDP, rx_buffer, sizeof(rx_buffer) - 1, 0, (struct sockaddr *)&source_addr, &socklen);
 
         // Error occurred during receiving
-        if (len < 0) {
+        if (len <= 4) {
             ESP_LOGE(TAG, "recvfrom failed: errno %d", errno);
             break;
         }
         // Data received
+        else {
+            ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
 
-        ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
-
-        parsemsg();
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
-        return;
+            parsemsg();
+            vTaskDelay(2000 / portTICK_PERIOD_MS);
+            return;
+        }
     }
 
     if (sUDP != -1) {
