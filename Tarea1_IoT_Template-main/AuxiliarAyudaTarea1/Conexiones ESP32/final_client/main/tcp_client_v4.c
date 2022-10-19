@@ -62,8 +62,11 @@ void tcp_client(void)
             TCPConnection();
         }
         if (transport == 1) {
-            xTaskCreate(udp_client_task, "udp_client", 4096, NULL, 5, NULL);
+            udp_client_task();
+            // xTaskCreate(udp_client_task, "udp_client", 4096, NULL, 5, NULL);
         }
+
+        
 
     }
 }
@@ -73,7 +76,7 @@ int TCP_send_frag(int sock, char transport, char protocolo)
     //Parte el mensaje (payload) en trozos de 1000 btyes y los manda por separado, esperando un OK con cada trozo
     printf("Sending!\n");
     char *payload = mensaje(protocolo, transport);
-    int payloadLen = messageLength(protocolo) - 1;
+    int payloadLen = messageLength(protocolo);
     
 
     for (int i = 0; i < payloadLen; i += PACK_LEN)
@@ -172,18 +175,18 @@ void TCPConnection() {
     // Crea el socket
     int sTCP = socket(addr_family, SOCK_STREAM, ip_protocol);
     if (sTCP < 0) {
-        ESP_LOGE(TAG, "Unable to create TCP socket: errno %d", errno);
+        ESP_LOGE(TAG, "[TCP] Unable to create TCP socket: errno %d", errno);
         mimir();
         return;
     }
-    ESP_LOGI(TAG, "Socket TCP created, connecting to %s:%d", HOST_IP_ADDR, PORT);
+    ESP_LOGI(TAG, "[TCP] Socket TCP created, connecting to %s:%d", HOST_IP_ADDR, PORT);
 
     int err = connect(sTCP, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
     if (err != 0) {
-        ESP_LOGE(TAG, "Socket unable to connect: errno %d", errno);
+        ESP_LOGE(TAG, "[TCP] Socket unable to connect: errno %d", errno);
         return;
     }
-    ESP_LOGI(TAG, "Successfully connected");
+    ESP_LOGI(TAG, "[TCP] Successfully connected");
 
     while (1) {
         payload = mensaje(protocol, transport);
@@ -193,19 +196,19 @@ void TCPConnection() {
         // send(sTCP, payload, msglen, 0);
 
         if (err < 0) {
-            ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+            ESP_LOGE(TAG, "[TCP] Error occurred during sending: errno %d", errno);
             break;
         }
 
         int len = recv(sTCP, rx_buffer, sizeof(rx_buffer) - 1, 0);
         // Error occurred during receiving
         if (len < 0) {
-            ESP_LOGE(TAG, "recv failed: errno %d", errno);
+            ESP_LOGE(TAG, "[TCP] recv failed: errno %d", errno);
             break;
         }
         // Data received
         else {
-            ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
+            ESP_LOGI(TAG, "[TCP] Received %d bytes from %s:", len, host_ip);
             parsemsg();
             return;
         }
@@ -220,23 +223,25 @@ void TCPConnection() {
 }
 
 
-static void udp_client_task(void *pvParameters) {
+
+void udp_client_task() {
+    int alt_port = 5011;
 #if defined(CONFIG_EXAMPLE_IPV4)
         struct sockaddr_in dest_addr;
         inet_pton(AF_INET, host_ip, &dest_addr.sin_addr);
         dest_addr.sin_family = AF_INET;
-        dest_addr.sin_port = htons(PORT);
+        dest_addr.sin_port = htons(alt_port);
         addr_family = AF_INET;
         ip_protocol = IPPROTO_IP;
 #elif defined(CONFIG_EXAMPLE_SOCKET_IP_INPUT_STDIN)
         struct sockaddr_storage dest_addr = { 0 };
         ESP_ERROR_CHECK(get_addr_from_stdin(PORT, SOCK_STREAM, &ip_protocol, &addr_family, &dest_addr));
 #endif
-    int alt_port = 5011;
+    
 
     int sUDP = socket(addr_family, SOCK_DGRAM, ip_protocol);
     if (sUDP < 0) {
-        ESP_LOGE(TAG, "Unable to create UDP socket: errno %d", errno);
+        ESP_LOGE(TAG, "[UDP] Unable to create UDP socket: errno %d", errno);
         mimir();
         return;
     }
@@ -247,7 +252,7 @@ static void udp_client_task(void *pvParameters) {
     timeout.tv_usec = 0;
     setsockopt (sUDP, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof timeout);
 
-    ESP_LOGI(TAG, "Socket created, sending to %s:%d", HOST_IP_ADDR, alt_port);
+    ESP_LOGI(TAG, "[UDP] Socket created, sending to %s:%d", HOST_IP_ADDR, dest_addr.sin_port);
 
     while (1) {
     
@@ -257,10 +262,10 @@ static void udp_client_task(void *pvParameters) {
 
         int err = sendto(sUDP, payload, msglen, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
         if (err < 0) {
-            ESP_LOGE(TAG, "Error occurred during sending: errno %d", errno);
+            ESP_LOGE(TAG, "[UDP] Error occurred during sending: errno %d", errno);
             break;
         }
-        ESP_LOGI(TAG, "Message sent:%s", payload);
+        ESP_LOGI(TAG, "[UDP] Message sent:%s", payload);
 
         // Recibe respuesta
         struct sockaddr_storage source_addr; // Large enough for both IPv4 or IPv6
@@ -269,24 +274,26 @@ static void udp_client_task(void *pvParameters) {
 
         // Error occurred during receiving
         if (len <= 4) {
-            ESP_LOGE(TAG, "recvfrom failed: errno %d", errno);
+            ESP_LOGE(TAG, "[UDP] recvfrom failed: errno %d", errno);
             break;
         }
         // Data received
         else {
-            ESP_LOGI(TAG, "Received %d bytes from %s:", len, host_ip);
+            ESP_LOGI(TAG, "[UDP] Received %d bytes from %s:", len, host_ip);
 
             parsemsg();
             vTaskDelay(2000 / portTICK_PERIOD_MS);
-            return;
+            if (protocol == 0) {
+                return;
+            }
         }
     }
 
     if (sUDP != -1) {
-        ESP_LOGE(TAG, "Shutting down socket and restarting...");
+        ESP_LOGE(TAG, "[UDP] Shutting down socket and restarting...");
         shutdown(sUDP, 0);
         close(sUDP);
     }
 
-    vTaskDelete(NULL);
+    // vTaskDelete(NULL);
 }
