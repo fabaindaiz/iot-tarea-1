@@ -8,7 +8,6 @@ class TCPSocket():
     def __init__(self):
         self.host = ("192.168.4.1", 5010)
         self.sTCP = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sTCP.setdefaulttimeout()
         self.sTCP.bind(self.host)
         self.sTCP.listen(2)
         print(f"Listening TCP on {self.host}")
@@ -17,7 +16,7 @@ class TCPSocket():
         try:
             self.conn, self.addr = self.sTCP.accept()
             data = self.TCP_frag_recv()
-            print(f"Received '{data}' from {self.addr}")
+            print(f"[TCP] Received '{data}' from {self.addr}")
             return parseData(data)
         except Exception as e:
             pass
@@ -26,7 +25,7 @@ class TCPSocket():
         try:
             self.conn.send(data)
             self.conn.close()
-            print(f"Sent '{data}' to {self.addr}")
+            print(f"[TCP] Sent '{data}' to {self.addr}")
             return data
         except Exception as e:
             pass
@@ -62,7 +61,7 @@ class UDPSocket():
     def receive(self):
         try:
             data, self.addr = self.UDP_frag_recv()
-            print(f"Received '{data}' from {self.addr}")
+            print(f"[UDP] Received '{data}' from {self.addr}")
             return parseData(data)
         except Exception as e:
             pass
@@ -70,7 +69,7 @@ class UDPSocket():
     def send(self, data):
         try:
             self.sUDP.sendto(data, self.addr)
-            print(f"Sent '{data}' to {self.addr}")
+            print(f"[UDP] Sent '{data}' to {self.addr}")
             return data
         except Exception as e:
             pass
@@ -135,11 +134,13 @@ class Server():
             self.socket.send(data_resp)
 
             # Hace los cambios necesarios
-            if self.change:
-                if self.transport == 0:
-                    self.socket = self.TCP
-                else:
-                    self.socket = self.UDP
+            #if self.change:
+            if self.transport == 0:
+                print("Changed to TCP")
+                self.socket = self.TCP
+            else:
+                print("Changed to UDP")
+                self.socket = self.UDP
 
 server = Server()
 server.mainLoop()
