@@ -2,7 +2,7 @@ createData = '''CREATE TABLE Datos (
     MessageId INTEGER PRIMARY KEY,
     MAC TEXT NOT NULL,
     IDDevice TEXT NOT NULL,
-    Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    Timestamp DATETIME DEFAULT (datetime('now', 'localtime')),
     Val INTEGER,
     Batt FLOAT,
     Temp FLOAT,
@@ -27,7 +27,7 @@ createLogs = '''CREATE TABLE Logs (
     IDDevice TEXT NOT NULL,
     TransportLayer INTEGER,
     ProtocolID INTEGER,
-    Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    Timestamp DATETIME DEFAULT (datetime('now', 'localtime'))
 );'''
 
 createConf = '''CREATE TABLE Conf (
