@@ -260,7 +260,20 @@ void udp_client_task() {
         int msglen = messageLength(protocol);
         payload = mensaje(protocol, transport);
 
-        int err = sendto(sUDP, payload, msglen, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+        int payloadLen = messageLength(protocolo);
+
+        for (int i = 0; i < payloadLen; i += PACK_LEN)
+        {
+            int size = fmin(PACK_LEN, payloadLen - i);
+            char *pack = malloc(size);
+            memcpy(pack, &(payload[i]), size);
+
+            //Enviamos el trozo
+            int err = sendto(sUDP, payload, msglen, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+            free(pack);
+        }
+        int err = sendto(sUDP, '\0', msglen, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+        
         if (err < 0) {
             ESP_LOGE(TAG, "[UDP] Error occurred during sending: errno %d", errno);
             break;
