@@ -124,8 +124,7 @@ int TCP_send_frag(int sock, char transport, char protocolo)
     return err;
 }
 
-void mimir() {
-    const int deep_sleep_sec = 4;
+void mimir(int deep_sleep_sec) {
     ESP_LOGI(TAG, "Entering deep sleep for %d seconds", deep_sleep_sec);
     esp_deep_sleep(1000000LL * deep_sleep_sec);
 }
@@ -152,7 +151,7 @@ void parsemsg() {
 
     if (transport == 0 && !change_transport && !change_protocol) {
         // mimir
-        mimir();
+        mimir(5);
 
         
     }
@@ -176,7 +175,7 @@ void TCPConnection() {
     int sTCP = socket(addr_family, SOCK_STREAM, ip_protocol);
     if (sTCP < 0) {
         ESP_LOGE(TAG, "[TCP] Unable to create TCP socket: errno %d", errno);
-        mimir();
+        mimir(1);
         return;
     }
     ESP_LOGI(TAG, "[TCP] Socket TCP created, connecting to %s:%d", HOST_IP_ADDR, PORT);
@@ -242,7 +241,7 @@ void udp_client_task() {
     int sUDP = socket(addr_family, SOCK_DGRAM, ip_protocol);
     if (sUDP < 0) {
         ESP_LOGE(TAG, "[UDP] Unable to create UDP socket: errno %d", errno);
-        mimir();
+        mimir(1);
         return;
     }
 
