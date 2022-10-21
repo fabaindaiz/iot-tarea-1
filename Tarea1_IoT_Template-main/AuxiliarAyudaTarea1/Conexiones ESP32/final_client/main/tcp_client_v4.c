@@ -124,8 +124,7 @@ int TCP_send_frag(int sock, char transport, char protocolo)
     return err;
 }
 
-void mimir() {
-    const int deep_sleep_sec = 4;
+void mimir(int deep_sleep_sec) {
     ESP_LOGI(TAG, "Entering deep sleep for %d seconds", deep_sleep_sec);
     esp_deep_sleep(1000000LL * deep_sleep_sec);
 }
@@ -152,7 +151,7 @@ void parsemsg() {
 
     if (transport == 0 && !change_transport && !change_protocol) {
         // mimir
-        mimir();
+        mimir(5);
 
         
     }
@@ -176,7 +175,7 @@ void TCPConnection() {
     int sTCP = socket(addr_family, SOCK_STREAM, ip_protocol);
     if (sTCP < 0) {
         ESP_LOGE(TAG, "[TCP] Unable to create TCP socket: errno %d", errno);
-        mimir();
+        mimir(1);
         return;
     }
     ESP_LOGI(TAG, "[TCP] Socket TCP created, connecting to %s:%d", HOST_IP_ADDR, PORT);
@@ -242,7 +241,8 @@ void udp_client_task() {
     int sUDP = socket(addr_family, SOCK_DGRAM, ip_protocol);
     if (sUDP < 0) {
         ESP_LOGE(TAG, "[UDP] Unable to create UDP socket: errno %d", errno);
-        mimir();
+        // mimir(1);
+        udp_client_task();
         return;
     }
 
@@ -255,13 +255,32 @@ void udp_client_task() {
     ESP_LOGI(TAG, "[UDP] Socket created, sending to %s:%d", HOST_IP_ADDR, dest_addr.sin_port);
 
     while (1) {
+        printf("entrado al while!\n");
     
         // Envio paayload
         int msglen = messageLength(protocol);
         payload = mensaje(protocol, transport);
 
-        int err = sendto(sUDP, payload, msglen, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
-        if (err < 0) {
+        int payloadLen = messageLength(protocol);
+
+        for (int i = 0; i < payloadLen; i += PACK_LEN)
+        {
+            int size = fmin(PACK_LEN, payloadLen - i);
+            char *pack = malloc(size);
+            printf("malloc creado!\n");
+            memcpy(pack, &(payload[i]), size);
+            printf("memoria copiada!\n");
+
+            //Enviamos el trozo
+            int err = sendto(sUDP, pack, size, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+            printf("enviado!\n");
+            free(pack);
+            printf("liberado!\n");
+        }
+        int err2 = sendto(sUDP, "\0", 1, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+        printf("mandado el 0\n");
+        
+        if (err2 < 0) {
             ESP_LOGE(TAG, "[UDP] Error occurred during sending: errno %d", errno);
             break;
         }
