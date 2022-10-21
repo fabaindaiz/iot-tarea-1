@@ -9,8 +9,6 @@ Proyecto
 |--- Raspberry  
 |--- ESP32-|---main
 
-Se permite cambiar de protocolo en el servidor manteniendo pulsado un numero del 0 al 5 y cambiar de capa de transporte pulsado la 'T' para TCP y la 'U' para UDP.
-
 ## Instrucciones de uso
 
 ### Server raspberry
@@ -18,6 +16,8 @@ Se permite cambiar de protocolo en el servidor manteniendo pulsado un numero del
     - Se debe ubicar el terminal de la raspberry en la carpeta "Server Raspberry"
     - Se debe ejecutar el comando "sudo python3 ServerRaspberry.py"
     - Con esto se inicia el servidor en la raspberry
+
+    - Se permite cambiar de protocolo en el servidor manteniendo pulsado un numero del 0 al 5 y cambiar de capa de transporte pulsado la 'T' para TCP y la 'U' para UDP.
 
 ### Cliente ESP
     - Se debe iniciar el terminal del "edf.py" en la carpeta "Conexiones ESP32"
