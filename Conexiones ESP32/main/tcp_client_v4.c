@@ -240,7 +240,7 @@ void udp_client_task() {
 
     int sUDP = socket(addr_family, SOCK_DGRAM, ip_protocol);
     if (sUDP < 0) {
-        ESP_LOGE(TAG, "[UDP] Unable to create UDP socket: errno %d", errno);
+        ESP_LOGE(TAG, "[UDP] Unable to create UDP socket: errno %d ", errno);
         // mimir(1);
         vTaskDelay(2000 / portTICK_PERIOD_MS);
         udp_client_task();
