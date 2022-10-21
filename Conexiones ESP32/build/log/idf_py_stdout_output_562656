@@ -1,0 +1,47 @@
+[1/10] Performing build step for 'bootloader'
+[1/1] cd "/home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/final_client/build/bootloader/esp-idf/esptool_py" && /home/esteban/.espressif/python_env/idf5.1_py3.8_env/bin/python /home/esteban/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones\ ESP32/final_client/build/bootloader/bootloader.bin
+Bootloader binary size 0x66c0 bytes. 0x940 bytes (8%) free.
+[2/8] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/tcp_client_v4.c.obj
+In file included from ../main/tcp_client_v4.c:18:
+../main/packeting.c: In function 'header':
+../main/packeting.c:17:25: warning: initialization of 'short unsigned int' from 'char *' makes integer from pointer without a cast [-Wint-conversion]
+   17 |     unsigned short ID = "AB";
+      |                         ^~~~
+../main/tcp_client_v4.c: In function 'parsemsg':
+../main/tcp_client_v4.c:134:19: warning: unused variable 'status' [-Wunused-variable]
+  134 |     unsigned char status = (unsigned char) rx_buffer[2];
+      |                   ^~~~~~
+../main/tcp_client_v4.c:133:19: warning: unused variable 'change' [-Wunused-variable]
+  133 |     unsigned char change = (unsigned char) rx_buffer[1];
+      |                   ^~~~~~
+../main/tcp_client_v4.c: In function 'TCPConnection':
+../main/tcp_client_v4.c:192:13: warning: unused variable 'msglen' [-Wunused-variable]
+  192 |         int msglen = messageLength(protocol);
+      |             ^~~~~~
+../main/tcp_client_v4.c: In function 'udp_client_task':
+../main/tcp_client_v4.c:274:17: warning: unused variable 'err' [-Wunused-variable]
+  274 |             int err = sendto(sUDP, pack, size, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+      |                 ^~~
+../main/tcp_client_v4.c:260:13: warning: unused variable 'msglen' [-Wunused-variable]
+  260 |         int msglen = messageLength(protocol);
+      |             ^~~~~~
+[3/8] Linking C static library esp-idf/main/libmain.a
+[4/8] Generating ld/sections.ld
+[5/8] Linking CXX executable tcp_client.elf
+[6/8] Generating binary image from built executable
+esptool.py v4.3
+Creating esp32 image...
+Merged 25 ELF sections
+Successfully created esp32 image.
+Generated /home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/final_client/build/tcp_client.bin
+[7/8] cd "/home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/final_client/build/esp-idf/esptool_py" && /home/esteban/.espressif/python_env/idf5.1_py3.8_env/bin/python /home/esteban/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones\ ESP32/final_client/build/partition_table/partition-table.bin /home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones\ ESP32/final_client/build/tcp_client.bin
+tcp_client.bin binary size 0xb5390 bytes. Smallest app partition is 0x100000 bytes. 0x4ac70 bytes (29%) free.
+[7/8] cd /home/esteban/esp/esp-idf/components/esptool_py && /usr/bin/cmake -D IDF_PATH=/home/esteban/esp/esp-idf -D "SERIAL_TOOL=/home/esteban/.espressif/python_env/idf5.1_py3.8_env/bin/python;;/home/esteban/esp/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D "WORKING_DIRECTORY=/home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/final_client/build" -P /home/esteban/esp/esp-idf/components/esptool_py/run_serial_tool.cmake
+esptool esp32 -p /dev/ttyUSB0 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 2MB 0x1000 bootloader/bootloader.bin 0x10000 tcp_client.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.3
+Serial port /dev/ttyUSB0
+
+A fatal error occurred: Could not open /dev/ttyUSB0, the port doesn't exist
+FAILED: CMakeFiles/flash 
+cd /home/esteban/esp/esp-idf/components/esptool_py && /usr/bin/cmake -D IDF_PATH=/home/esteban/esp/esp-idf -D "SERIAL_TOOL=/home/esteban/.espressif/python_env/idf5.1_py3.8_env/bin/python;;/home/esteban/esp/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D "WORKING_DIRECTORY=/home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/final_client/build" -P /home/esteban/esp/esp-idf/components/esptool_py/run_serial_tool.cmake
+ninja: build stopped: subcommand failed.

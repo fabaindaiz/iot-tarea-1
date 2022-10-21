@@ -1,0 +1,40 @@
+[1/14] Linking C static library esp-idf/wifi_provisioning/libwifi_provisioning.a
+[2/14] Building C object esp-idf/protocol_examples_common/CMakeFiles/__idf_protocol_examples_common.dir/console_cmd.c.obj
+[3/14] Building C object esp-idf/protocol_examples_common/CMakeFiles/__idf_protocol_examples_common.dir/connect.c.obj
+[4/14] Performing build step for 'bootloader'
+[1/1] cd "/home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/final_client/build/bootloader/esp-idf/esptool_py" && /home/esteban/.espressif/python_env/idf5.1_py3.8_env/bin/python /home/esteban/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones\ ESP32/final_client/build/bootloader/bootloader.bin
+Bootloader binary size 0x66c0 bytes. 0x940 bytes (8%) free.
+[5/12] Linking C static library esp-idf/protocol_examples_common/libprotocol_examples_common.a
+[6/12] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/tcp_client_v4.c.obj
+In file included from ../main/tcp_client_v4.c:18:
+../main/packeting.c: In function 'header':
+../main/packeting.c:17:25: warning: initialization of 'short unsigned int' from 'char *' makes integer from pointer without a cast [-Wint-conversion]
+   17 |     unsigned short ID = "AB";
+      |                         ^~~~
+../main/tcp_client_v4.c: In function 'parsemsg':
+../main/tcp_client_v4.c:134:19: warning: unused variable 'status' [-Wunused-variable]
+  134 |     unsigned char status = (unsigned char) rx_buffer[2];
+      |                   ^~~~~~
+../main/tcp_client_v4.c:133:19: warning: unused variable 'change' [-Wunused-variable]
+  133 |     unsigned char change = (unsigned char) rx_buffer[1];
+      |                   ^~~~~~
+../main/tcp_client_v4.c: In function 'TCPConnection':
+../main/tcp_client_v4.c:192:13: warning: unused variable 'msglen' [-Wunused-variable]
+  192 |         int msglen = messageLength(protocol);
+      |             ^~~~~~
+../main/tcp_client_v4.c: In function 'udp_client_task':
+../main/tcp_client_v4.c:271:17: warning: unused variable 'err' [-Wunused-variable]
+  271 |             int err = sendto(sUDP, payload, msglen, 0, (struct sockaddr *)&dest_addr, sizeof(dest_addr));
+      |                 ^~~
+[7/12] Linking C static library esp-idf/main/libmain.a
+[8/12] Generating ld/sections.ld
+[9/12] Building C object CMakeFiles/tcp_client.elf.dir/project_elf_src_esp32.c.obj
+[10/12] Linking CXX executable tcp_client.elf
+[11/12] Generating binary image from built executable
+esptool.py v4.3
+Creating esp32 image...
+Merged 25 ELF sections
+Successfully created esp32 image.
+Generated /home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/final_client/build/tcp_client.bin
+[12/12] cd "/home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones ESP32/final_client/build/esp-idf/esptool_py" && /home/esteban/.espressif/python_env/idf5.1_py3.8_env/bin/python /home/esteban/esp/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones\ ESP32/final_client/build/partition_table/partition-table.bin /home/esteban/Desktop/IoT/iot-tarea-1/Tarea1_IoT_Template-main/AuxiliarAyudaTarea1/Conexiones\ ESP32/final_client/build/tcp_client.bin
+tcp_client.bin binary size 0xb5330 bytes. Smallest app partition is 0x100000 bytes. 0x4acd0 bytes (29%) free.
