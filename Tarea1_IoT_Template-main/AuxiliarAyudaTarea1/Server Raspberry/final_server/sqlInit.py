@@ -16,9 +16,9 @@ createData = '''CREATE TABLE Datos (
     Frecy FLOAT,
     Ampz FLOAT,
     Frecz FLOAT,
-    Accx JSON,
-    Accy JSON,
-    Accz JSON
+    Accx TEXT,
+    Accy TEXT,
+    Accz TEXT
 );'''
 # Para el Timestamp probar: Timestamp DATETIME DEFAULT (datetime('now', 'localtime')),
 

@@ -1,6 +1,7 @@
 import socket
 from Desempaquetamiento import parseData, response
-from sqlQuery import getConf
+from sqlQuery import getConf, setConf
+import keyboard
 
 
 class TCPSocket():
@@ -19,6 +20,7 @@ class TCPSocket():
             print(f"[TCP] Received '{data}' from {self.addr}")
             return parseData(data)
         except Exception as e:
+            print(e)
             pass
     
     def send(self, data):
@@ -79,17 +81,17 @@ class UDPSocket():
         addr = None
         while True:
             try:
-
                 data, addr = self.sUDP.recvfrom(1024)
+                print(data)
                 if data == b'\0':
                     break
                 else:
                     doc += data
             except TimeoutError:
                 raise
-            except Exception:
+            except Exception as e:
                 raise
-            # s.sendto(b'\1', addr)
+            #s.sendto(b'\1', addr)
         return (doc, addr)
 
 
@@ -106,6 +108,7 @@ class Server():
 
     def get_response(self):
         config = getConf()
+        print(config[0])
         if self.protocol != config[0]: 
             self.protocol = config[0]
         if self.transport != config[1]:
@@ -120,6 +123,7 @@ class Server():
     def mainLoop(self):
         while True:
             # Recibe un valor
+            
             data_dict = self.socket.receive()
 
             # Obtiene la respuesta
@@ -141,6 +145,39 @@ class Server():
             else:
                 print("Changed to UDP")
                 self.socket = self.UDP
+            keyboardHandler(self.protocol, self.transport)
+                
+            
+def keyboardHandler(protocol, transport):
+    if keyboard.is_pressed('0'):
+        setConf(0, transport)
+        print("Cambiado a protocolo 0")
+    elif keyboard.is_pressed('1'):
+        setConf(1, transport)
+        print("Cambiado a protocolo 1")
+    elif keyboard.is_pressed('2'):
+        setConf(2, transport)
+        print("Cambiado a protocolo 2")
+    elif keyboard.is_pressed('3'):
+        setConf(3, transport)
+        print("Cambiado a protocolo 3")
+    elif keyboard.is_pressed('4'):
+        setConf(4, transport)
+        print("Cambiado a protocolo 4")
+    elif keyboard.is_pressed('5'):
+        setConf(5, transport)
+        print("Cambiado a protocolo 5")
+        
+    elif keyboard.is_pressed('T'):
+        setConf(protocol, 0)
+        print("Cambiado a transporte TCP")
+    elif keyboard.is_pressed('U'):
+        setConf(protocol, 1)
+        print("Cambiado a transporte UDP")
+    
+    
+    
+
 
 server = Server()
 server.mainLoop()

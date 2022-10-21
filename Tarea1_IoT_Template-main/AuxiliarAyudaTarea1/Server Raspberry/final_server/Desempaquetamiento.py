@@ -1,6 +1,7 @@
 from struct import unpack, pack
 from sqlQuery import dataSave
 import traceback
+import keyboard
 
 # Documentación struct unpack,pack :https://docs.python.org/3/library/struct.html#
 '''
@@ -27,9 +28,9 @@ def parseData(packet):
     header = packet[:12]
     data = packet[12:]
     print(f"Largo del header: {len(header)}")
-    print(f"Header: {header}")
+    #print(f"Header: {header}")
     print(f"Largo del data: {len(data)}")
-    print(f"Data: {data}")
+    #print(f"Data: {data}")
     header = headerDict(header)
     dataD = dataDict(header["protocol"], data)
     if dataD is not None:
@@ -38,7 +39,7 @@ def parseData(packet):
     return None if dataD is None else {**header, **dataD}
 
 def protUnpack(protocol:int, data):
-    protocol_unpack = ["<B", "<BB", "<BBfIBf", "<BBfIBff", "<BBfIBffffffff"]
+    protocol_unpack = ["<B", "<BB", "<BBfIBf", "<BBfIBff", "<BBfIBffffffff", "<BBfIBf8000s8000s8000s"]
     return unpack(protocol_unpack[protocol], data)
 
 def headerDict(data):
