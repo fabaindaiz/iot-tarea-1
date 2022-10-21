@@ -287,7 +287,7 @@ void udp_client_task() {
 
         // Error occurred during receiving
         if (len <= 4) {
-            ESP_LOGE(TAG, "[UDP] recvfrom failed: errno %d, TIMEOUT", errno);
+            ESP_LOGE(TAG, "[UDP] recvfrom failed: errno %d,  TIMEOUT", errno);
             break;
         }
         // Data received
