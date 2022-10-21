@@ -30,7 +30,7 @@ char* header(unsigned int protocol, int transportLayer){
 
 unsigned short lengmsg[6] = {1, 2, 15, 19, 43, 24015};
 unsigned short dataLength(unsigned int protocol){
-	printf("Datalength: %hu.\n", lengmsg[protocol]);
+	//printf("Datalength: %hu.\n", lengmsg[protocol]);
     return lengmsg[protocol];
 }
 
